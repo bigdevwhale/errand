@@ -41,6 +41,7 @@ import app.errand.ui.Home
 import app.errand.ui.Language
 import app.errand.ui.components.Chip
 import app.errand.ui.components.ClientMark
+import app.errand.ui.components.CommunityLinks
 import app.errand.ui.components.Field
 import app.errand.ui.components.PaperCard
 import app.errand.ui.components.PrimaryButton
@@ -118,6 +119,9 @@ fun SettingsScreen(home: Home, go: Go) {
                     { stringResource(when (it) { Language.EN -> R.string.lang_en; Language.RU -> R.string.lang_ru; else -> R.string.lang_system }) },
                     Language::set,
                 )
+
+                SectionTitle(stringResource(R.string.community))
+                CommunityLinks()
 
                 SectionTitle(stringResource(R.string.about))
                 PaperCard {
