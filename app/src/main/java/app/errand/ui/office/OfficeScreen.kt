@@ -22,6 +22,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import kotlinx.coroutines.delay
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
 import androidx.compose.material.icons.automirrored.rounded.Send
@@ -73,6 +82,7 @@ import java.time.Instant
 import java.time.ZoneId
 
 /** The office: the depot in its street, the courier's rank and coins, today's waybill, the way out. */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 fun OfficeScreen(home: Home, go: Go) {
     val c = ctx()
@@ -89,8 +99,17 @@ fun OfficeScreen(home: Home, go: Go) {
         container.write { office.order(name, qty, home.me?.id ?: office.me(c.getString(R.string.me))) }
     }
 
+    // While the add-a-line field has focus, keep it above the keyboard as lines are added (#1).
+    val bring = remember { BringIntoViewRequester() }
+    var typing by remember { mutableStateOf(false) }
+    val ime = WindowInsets.isImeVisible
+    LaunchedEffect(typing, ime, home.pending.size) {
+        if (typing) { delay(150); bring.bringIntoView() }
+    }
+
     Box(Modifier.fillMaxSize().background(S.c.bg)) {
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).navigationBarsPadding()) {
+        // imePadding shrinks the scroll area above the keyboard, so the add-a-line field scrolls into view.
+        Column(Modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).navigationBarsPadding()) {
             Box {
                 DepotScene(
                     DepotLook(home.owned, t.hour, t.minute, stringResource(R.string.sign), out = home.open != null),
@@ -149,7 +168,7 @@ fun OfficeScreen(home: Home, go: Go) {
                             stringResource(R.string.more_lines, home.pending.size - 6), style = SType.Typed.copy(color = S.c.faint),
                             modifier = Modifier.clickable(onClick = go::waybill).padding(start = 30.dp, top = 4.dp, bottom = 4.dp),
                         )
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(Modifier.bringIntoViewRequester(bring).onFocusChanged { typing = it.hasFocus }, verticalAlignment = Alignment.CenterVertically) {
                             Field(
                                 text, { text = it.take(80) }, stringResource(R.string.add_line), Modifier.weight(1f),
                                 keyboard = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),

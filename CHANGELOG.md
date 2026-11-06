@@ -6,6 +6,15 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.0.2] - 2026-11-07
+
+### Fixed
+- On the office screen the add-a-line field slid under the keyboard as the waybill grew, and the screen would not scroll to it (#1). It now stays above the keyboard.
+
+<!-- tg
+Исправлено: поле «Добавить строку» на главном экране больше не уезжает под клавиатуру, писать вслепую не придётся.
+-->
+
 ## [1.0.1] - 2026-10-25
 
 ### Added
