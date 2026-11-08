@@ -332,4 +332,6 @@
     <string name="community_follow_sub">the bot writes when a version is out</string>
     <string name="community_chat">StillCraft chat</string>
     <string name="community_chat_sub">all the apps and people</string>
+    <string name="community_support">Support Errand</string>
+    <string name="community_support_sub">for new runs and a warm office</string>
 </resources>

@@ -6,6 +6,15 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [Unreleased]
+
+### Added
+- Settings -> Community has a "Support Errand" line: it opens the StillCraft support page, for new runs and a warm office.
+
+<!-- tg
+Новое: в Настройках, в разделе «Сообщество», появилась строчка «Поддержать Посыльного» — на новые рейсы и тёплую контору.
+-->
+
 ## [1.0.2] - 2026-11-07
 
 ### Fixed
