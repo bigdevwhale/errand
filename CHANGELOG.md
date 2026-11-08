@@ -6,9 +6,10 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
-## [Unreleased]
+## [1.0.3] - 2026-11-08
 
 ### Added
+- Each release also carries Errand-v<version>.aab for Google Play, with every language inside so the in-app switch keeps working.
 - Settings -> Community has a "Support Errand" line: it opens the StillCraft support page, for new runs and a warm office.
 
 <!-- tg
