@@ -70,7 +70,7 @@ python tools/play.py   # office, waybill, run, payslip, depot, file, notebook, a
 | Поле | Значение |
 |---|---|
 | App category | Application → **Shopping** |
-| Tags (до 5) | Shopping list, Grocery, To-do list, Productivity, Casual (берите ближайшие из списка Play) |
+| Tags (до 5) | Shopping, Productivity, Food & drink, House & home, Notebook |
 | Email address | *ваш публичный email* — обязательно, его увидят все |
 | Website | `https://bigdevwhale.github.io/stillcraft/apps/errand/` |
 | Phone | пусто |
