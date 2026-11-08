@@ -12,9 +12,7 @@ then close it like any HTML comment. The release notes carry it, and the chat bo
 - Each release also carries Errand-v<version>.aab for Google Play, with every language inside so the in-app switch keeps working.
 - Settings -> Community has a "Support Errand" line: it opens the StillCraft support page, for new runs and a warm office.
 
-<!-- tg
-Новое: в Настройках, в разделе «Сообщество», появилась строчка «Поддержать Посыльного» — на новые рейсы и тёплую контору.
--->
+<!-- tg skip -->
 
 ## [1.0.2] - 2026-11-07
 
