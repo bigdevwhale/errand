@@ -1,0 +1,1 @@
+A shopping list as a courier game: every trip to the shop is a run that pays.

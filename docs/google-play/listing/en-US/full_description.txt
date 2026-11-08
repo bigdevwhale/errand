@@ -1,0 +1,36 @@
+You run a small courier office, and its only courier is you. The household places orders on the waybill, you take it out on a run, walk the shop in the order things lie on its shelves and bring it all home. Every run pays in brass tokens: a bicycle at the door, an enamel sign over it, a van one day. A shopping list that is also a little courier game. Free, no ads, no account, no internet.
+
+📋 THE WAYBILL
+• Every line has a client: you or someone at home, each with a rubber stamp of their own
+• Type "milk 2 l" and the amount, the weight and the cold box are worked out for you
+• Share a list from any messenger to Errand and it lands on the waybill line by line
+• A line starting with "!" is a rush: home within the hour pays extra
+
+🛒 THE RUN
+• The waybill is sorted by the shop's shelves, and each shop learns its own order from the way you tick things off
+• The cold box goes last, the string bag fills up as you go
+• Money for the run and a warning when the bag gets too heavy for one trip
+• Shelf empty? Mark it, and the line rides over to the next run
+
+🧾 THE PAYSLIP
+• Tokens for every line and every kilo, for rushes on time and a run with nothing forgotten
+• Within budget pays a bonus, rain and snow pay +50%, a big run pays +50%
+• Forgotten lines ride over with a red "not delivered"
+
+🚲 THE DEPOT
+• Tokens buy the office: a flag, flowers in the window, an enamel sign, a lamp that lights up at night, a clock with the real time, a telephone, a dovecote, a second floor
+• At the door: a bicycle, a cargo trike, a scooter and a van
+
+🎖 THE PERSONNEL FILE
+• Seven ranks from errand runner to director, the record and fourteen badges
+
+📒 THE NOTEBOOK AND THE ARCHIVE
+• Prices noted on runs: what went up in the last month and which shop has it cheaper
+• Every waybill with its payslip, and a report for each month: runs, kilos, receipts, money left over
+
+ALSO
+• Everything is drawn: the office in its street with the sky by the hour, every upgrade and vehicle, the worn ink of the stamps
+• English and Russian
+• Free and open source (MIT)
+
+Privacy: no account, no ads, no analytics and no permissions at all, not even internet. Lists come in only when you share them. Everything stays on your phone.
