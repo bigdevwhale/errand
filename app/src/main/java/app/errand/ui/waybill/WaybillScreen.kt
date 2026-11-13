@@ -143,6 +143,9 @@ fun WaybillScreen(home: Home, go: Go, startAccept: Boolean = false) {
                     LineRow(i + 1, item, home, onClick = { editing = item.id })
                     Box(Modifier.fillMaxWidth().height(1.dp).background(S.c.rule))
                 }
+                if (home.pending.isNotEmpty()) item(key = "edit-hint") {
+                    Text(stringResource(R.string.lines_edit_hint), style = SType.Small, modifier = Modifier.padding(top = 8.dp))
+                }
             }
             // Ordering: who it's for, then the line.
             Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp)) {

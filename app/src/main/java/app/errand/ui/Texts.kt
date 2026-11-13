@@ -61,7 +61,11 @@ object T {
     /** "1 h 20 min", "25 min". */
     fun duration(c: Context, ms: Long): String {
         val m = (ms / 60_000).coerceAtLeast(0)
-        return if (m < 60) c.getString(R.string.dur_min, m) else c.getString(R.string.dur_h_min, m / 60, m % 60)
+        return when {
+            m < 60 -> c.getString(R.string.dur_min, m)
+            m % 60 == 0L -> c.getString(R.string.dur_h, m / 60)
+            else -> c.getString(R.string.dur_h_min, m / 60, m % 60)
+        }
     }
 
     fun coins(c: Context, n: Int) = plural(c, R.plurals.coins, n)

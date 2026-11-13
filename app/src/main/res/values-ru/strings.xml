@@ -340,4 +340,8 @@
     <string name="community_chat_sub">все приложения и люди</string>
     <string name="community_support">Поддержать Посыльного</string>
     <string name="community_support_sub">на новые рейсы и тёплую контору</string>
+    <string name="lines_edit_hint">Нажмите на строку, чтобы исправить её или удалить.</string>
+    <string name="run_add_line">Забыли вписать? «сыр 200 г»</string>
+    <string name="run_edit_hint">Долгое нажатие на строку – исправить или удалить.</string>
+    <string name="dur_h">%d ч</string>
 </resources>

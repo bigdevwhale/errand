@@ -334,4 +334,8 @@
     <string name="community_chat_sub">all the apps and people</string>
     <string name="community_support">Support Errand</string>
     <string name="community_support_sub">for new runs and a warm office</string>
+    <string name="lines_edit_hint">Tap a line to fix it or delete it.</string>
+    <string name="run_add_line">Forgot something? “cheese 200 g”</string>
+    <string name="run_edit_hint">Press and hold a line to fix it or delete it.</string>
+    <string name="dur_h">%d h</string>
 </resources>

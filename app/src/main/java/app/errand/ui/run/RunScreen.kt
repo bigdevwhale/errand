@@ -1,5 +1,9 @@
 package app.errand.ui.run
 
+import androidx.compose.material.icons.automirrored.rounded.Send
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -70,6 +74,7 @@ import app.errand.ui.art.Art
 import app.errand.ui.art.StringBag
 import app.errand.ui.components.Chip
 import app.errand.ui.components.Field
+import app.errand.ui.waybill.ItemSheet
 import app.errand.ui.components.FormLine
 import app.errand.ui.components.PrimaryButton
 import app.errand.ui.components.SectionTitle
@@ -110,6 +115,16 @@ fun RunScreen(home: Home, go: Go, startShop: Long? = null) {
     var deliver by rememberSaveable { mutableStateOf(false) }
     var cancel by rememberSaveable { mutableStateOf(false) }
     var lastTaken by rememberSaveable { mutableLongStateOf(0L) }
+    // Editing a line mid-run (long press) and a line forgotten at home (#2, #3).
+    var editing by rememberSaveable { mutableLongStateOf(0L) }
+    var forgot by rememberSaveable { mutableStateOf("") }
+    fun addForgot() {
+        val t = forgot.trim()
+        if (t.isEmpty()) return
+        val (name, qty) = app.errand.domain.Qty.split(t, home.ru)
+        forgot = ""
+        container.write { office.order(name, qty, office.me(c.getString(R.string.me)), shopId = 0) }
+    }
     val walk = home.walk(shop)
     val bag = home.bag
     val load = Rules.grams(bag) / (home.settings.carryKg * 1000f)
@@ -157,6 +172,7 @@ fun RunScreen(home: Home, go: Go, startShop: Long? = null) {
                     val out = item.outOn == run.id
                     LineRow(
                         i + 1, item, home, struck = out, showShop = false,
+                        onLongClick = { editing = item.id },
                         onClick = {
                             if (!out) {
                                 lastTaken = item.id
@@ -173,10 +189,25 @@ fun RunScreen(home: Home, go: Go, startShop: Long? = null) {
                     }
                     Box(Modifier.fillMaxWidth().height(1.dp).background(S.c.rule))
                 }
+                item(key = "forgot") {
+                    Column(Modifier.padding(top = 10.dp, end = 8.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Field(
+                                forgot, { forgot = it.take(80) }, stringResource(R.string.run_add_line), Modifier.weight(1f),
+                                keyboard = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
+                                actions = KeyboardActions(onDone = { addForgot() }),
+                            )
+                            IconButton(onClick = ::addForgot, enabled = forgot.isNotBlank()) {
+                                Icon(Icons.AutoMirrored.Rounded.Send, stringResource(R.string.add), tint = if (forgot.isNotBlank()) S.c.enamel else S.c.faint)
+                            }
+                        }
+                        Text(stringResource(R.string.run_edit_hint), style = SType.Small, modifier = Modifier.padding(top = 4.dp))
+                    }
+                }
                 if (bag.isNotEmpty()) {
                     item { SectionTitle(stringResource(R.string.in_the_bag)) }
                     itemsIndexed(bag, key = { _, it -> "b" + it.id }) { i, item ->
-                        LineRow(i + 1, item, home, struck = true, showShop = false, onClick = { pricing = item.id }) {
+                        LineRow(i + 1, item, home, struck = true, showShop = false, onClick = { pricing = item.id }, onLongClick = { editing = item.id }) {
                             if (item.price > 0) Text(home.money(item.price), style = SType.TypedSmall.copy(color = S.c.ink))
                             if (item.offList) Tag(stringResource(if (bag.firstOrNull { it.offList }?.id == item.id) R.string.treat else R.string.unordered_short), S.c.violet, Modifier.padding(start = 6.dp))
                             Spacer(Modifier.width(6.dp))
@@ -192,6 +223,8 @@ fun RunScreen(home: Home, go: Go, startShop: Long? = null) {
             }
         }
 
+        val edited = home.item(editing)
+        Sheet(edited != null, { editing = 0 }) { if (edited != null) ItemSheet(edited, home) { editing = 0 } }
         val priced = home.item(pricing)
         Sheet(priced != null, { pricing = 0 }) { if (priced != null) PriceSheet(priced, home) { pricing = 0 } }
         Sheet(unordered, { unordered = false }) { UnorderedSheet(home, run, shop) { unordered = false } }

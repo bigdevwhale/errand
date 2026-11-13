@@ -76,6 +76,7 @@ import app.errand.ui.ctx
 import app.errand.ui.theme.S
 import app.errand.ui.theme.SType
 import app.errand.ui.waybill.AcceptSheet
+import app.errand.ui.waybill.ItemSheet
 import app.errand.ui.waybill.LineRow
 import app.errand.ui.components.Sheet
 import java.time.Instant
@@ -89,6 +90,8 @@ fun OfficeScreen(home: Home, go: Go) {
     val container = c.container
     var text by rememberSaveable { mutableStateOf("") }
     var accept by rememberSaveable { mutableStateOf(false) }
+    // A line on the counter opens straight for fixing or deleting (#2, #3).
+    var editing by rememberSaveable { androidx.compose.runtime.mutableLongStateOf(0L) }
     val t = Instant.ofEpochMilli(home.now).atZone(ZoneId.systemDefault())
 
     fun add() {
@@ -163,7 +166,8 @@ fun OfficeScreen(home: Home, go: Go) {
                             style = SType.Muted.copy(color = if (home.heavy) S.c.stamp else S.c.muted),
                         )
                         Spacer(Modifier.height(6.dp))
-                        home.pending.take(6).forEachIndexed { i, item -> LineRow(i + 1, item, home, onClick = go::waybill) }
+                        home.pending.take(6).forEachIndexed { i, item -> LineRow(i + 1, item, home, onClick = { editing = item.id }) }
+                        if (home.pending.isNotEmpty()) Text(stringResource(R.string.lines_edit_hint), style = SType.Small, modifier = Modifier.padding(start = 30.dp, top = 2.dp))
                         if (home.pending.size > 6) Text(
                             stringResource(R.string.more_lines, home.pending.size - 6), style = SType.Typed.copy(color = S.c.faint),
                             modifier = Modifier.clickable(onClick = go::waybill).padding(start = 30.dp, top = 4.dp, bottom = 4.dp),
@@ -200,6 +204,8 @@ fun OfficeScreen(home: Home, go: Go) {
             }
         }
         Sheet(accept, { accept = false }) { AcceptSheet(home, go) { accept = false } }
+        val edited = home.item(editing)
+        Sheet(edited != null, { editing = 0 }) { if (edited != null) ItemSheet(edited, home) { editing = 0 } }
     }
 }
 

@@ -1,5 +1,6 @@
 package app.errand.ui.waybill
 
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -72,13 +73,17 @@ fun LineTags(item: Item, home: Home, showShop: Boolean = true) {
 }
 
 /** One typed line of the waybill: number, name and amount, its tags, the weight, whose order. */
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
-fun LineRow(n: Int, item: Item, home: Home, modifier: Modifier = Modifier, struck: Boolean = false, onClick: (() -> Unit)? = null, showShop: Boolean = true, trailing: @Composable (() -> Unit)? = null) {
+fun LineRow(n: Int, item: Item, home: Home, modifier: Modifier = Modifier, struck: Boolean = false, onClick: (() -> Unit)? = null, showShop: Boolean = true, onLongClick: (() -> Unit)? = null, trailing: @Composable (() -> Unit)? = null) {
     Row(
         modifier
             .fillMaxWidth()
             .heightIn(min = 44.dp)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .then(
+                if (onLongClick != null) Modifier.combinedClickable(onClick = onClick ?: {}, onLongClick = onLongClick)
+                else if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
+            )
             .padding(vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

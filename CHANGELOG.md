@@ -6,6 +6,21 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.1.0] - 2026-11-13
+
+### Added
+- Lines can be fixed or deleted anywhere: tap a line on the office counter (it used to just open the waybill), or press and hold one during a run (#2, #3).
+- A run has its own "Forgot something?" line: what you add goes straight onto the walk.
+- Belarusian roubles (Br) among the currencies (#4).
+
+### Fixed
+- Whole hours read "1 h", not "1 h 0 min".
+
+<!-- tg
+Новое: строку накладной можно исправить или удалить прямо с главного экрана, а во время рейса – долгим нажатием. Забытое можно дописать на ходу.
+Добавлены белорусские рубли.
+-->
+
 ## [1.0.3] - 2026-11-08
 
 ### Added

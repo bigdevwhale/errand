@@ -7,7 +7,8 @@ enum class Currency(val symbol: String, val before: Boolean, val cents: Boolean)
     EUR("€", true, true),
     GBP("£", true, true),
     KZT("₸", false, false),
-    UAH("₴", false, true);
+    UAH("₴", false, true),
+    BYN("Br", false, true);
 
     /** "1 249,90 ₽", "$12.49"; whole amounts without the zeros. */
     fun format(minor: Long): String {
