@@ -6,6 +6,15 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.1.1] - 2026-11-16
+
+### Fixed
+- While a run is out, the office card shows the lines still to pick up: tap one to fix or delete it, and a "Forgot something?" field adds a line from the home screen too. It used to offer only "Back to the run" (#5).
+
+<!-- tg
+Исправлено: пока рейс в пути, строки накладной видны прямо на главном экране – нажмите на строку, чтобы исправить или удалить её, а забытое можно дописать там же.
+-->
+
 ## [1.1.0] - 2026-11-13
 
 ### Added

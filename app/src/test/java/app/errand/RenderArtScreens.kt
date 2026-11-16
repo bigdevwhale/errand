@@ -103,6 +103,7 @@ abstract class ScreensBase {
     @Test fun notebook() = home().let { shot("6-notebook", it) { h, go -> NotebookScreen(h, go) } }
     @Test fun depot() = home(hour = 19).let { shot("7-depot", it) { h, go -> DepotScreen(h, go, startPreview = Upgrade.SCOOTER) } }
     @Test fun file() = home().let { shot("8-file", it) { h, go -> FileScreen(h, go) } }
+    @Test fun officeOut() = home(onRun = true, hour = 11).let { shot("1-office-out", it) { h, go -> OfficeScreen(h, go) } }
     @Test fun evening() = home(hour = 21).let { shot("9-evening", it) { h, go -> OfficeScreen(h, go) } }
 }
 

@@ -110,6 +110,21 @@ fun OfficeScreen(home: Home, go: Go) {
         if (typing) { delay(150); bring.bringIntoView() }
     }
 
+    // The add-a-line field, on the counter and on the card of a run under way (#5).
+    @Composable
+    fun AddField(hint: String) {
+        Row(Modifier.bringIntoViewRequester(bring).onFocusChanged { typing = it.hasFocus }, verticalAlignment = Alignment.CenterVertically) {
+            Field(
+                text, { text = it.take(80) }, hint, Modifier.weight(1f),
+                keyboard = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
+                actions = KeyboardActions(onDone = { add() }),
+            )
+            IconButton(onClick = ::add, enabled = text.isNotBlank()) {
+                Icon(Icons.AutoMirrored.Rounded.Send, stringResource(R.string.add), tint = if (text.isNotBlank()) S.c.enamel else S.c.faint)
+            }
+        }
+    }
+
     Box(Modifier.fillMaxSize().background(S.c.bg)) {
         // imePadding shrinks the scroll area above the keyboard, so the add-a-line field scrolls into view.
         Column(Modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).navigationBarsPadding()) {
@@ -142,7 +157,7 @@ fun OfficeScreen(home: Home, go: Go) {
             Column(Modifier.padding(horizontal = 12.dp)) {
                 val open = home.open
                 if (open != null) {
-                    PaperCard(onClick = go::run) {
+                    PaperCard {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
                                 Text(stringResource(R.string.waybill_n, open.number), style = SType.Title)
@@ -151,6 +166,16 @@ fun OfficeScreen(home: Home, go: Go) {
                             }
                             Stamp(stringResource(R.string.on_the_way), S.c.violet, angle = -8f, size = 16.sp)
                         }
+                        // What's still to pick up, fixable from here too; and a line forgotten at home (#5).
+                        val left = home.due.filter { it.outOn != open.id }
+                        if (left.isNotEmpty()) Spacer(Modifier.height(6.dp))
+                        left.take(6).forEachIndexed { i, item -> LineRow(i + 1, item, home, onClick = { editing = item.id }) }
+                        if (left.isNotEmpty()) Text(stringResource(R.string.lines_edit_hint), style = SType.Small, modifier = Modifier.padding(start = 30.dp, top = 2.dp))
+                        if (left.size > 6) Text(
+                            stringResource(R.string.more_lines, left.size - 6), style = SType.Typed.copy(color = S.c.faint),
+                            modifier = Modifier.clickable(onClick = go::run).padding(start = 30.dp, top = 4.dp, bottom = 4.dp),
+                        )
+                        AddField(stringResource(R.string.run_add_line))
                         Spacer(Modifier.height(12.dp))
                         PrimaryButton(stringResource(R.string.continue_run), go::run, Modifier.fillMaxWidth())
                     }
@@ -172,16 +197,7 @@ fun OfficeScreen(home: Home, go: Go) {
                             stringResource(R.string.more_lines, home.pending.size - 6), style = SType.Typed.copy(color = S.c.faint),
                             modifier = Modifier.clickable(onClick = go::waybill).padding(start = 30.dp, top = 4.dp, bottom = 4.dp),
                         )
-                        Row(Modifier.bringIntoViewRequester(bring).onFocusChanged { typing = it.hasFocus }, verticalAlignment = Alignment.CenterVertically) {
-                            Field(
-                                text, { text = it.take(80) }, stringResource(R.string.add_line), Modifier.weight(1f),
-                                keyboard = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
-                                actions = KeyboardActions(onDone = { add() }),
-                            )
-                            IconButton(onClick = ::add, enabled = text.isNotBlank()) {
-                                Icon(Icons.AutoMirrored.Rounded.Send, stringResource(R.string.add), tint = if (text.isNotBlank()) S.c.enamel else S.c.faint)
-                            }
-                        }
+                        AddField(stringResource(R.string.add_line))
                         Spacer(Modifier.height(12.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             SoftButton(stringResource(R.string.open_waybill), go::waybill, Modifier.weight(1f))
