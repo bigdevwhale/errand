@@ -4,6 +4,9 @@ name: Google Play
 # from the release notes: en-US from the visible text, ru-RU from the hidden
 # <!-- tg ... --> block. If the tag is already released on the track, only the
 # notes are updated. Runs after every successful Release workflow, or by hand.
+# Run by hand with "graphics" ticked, it instead replaces the store listing's
+# icon, feature graphic and phone screenshots (en-US, ru-RU) with the files in
+# docs/google-play/graphics made by tools/play.py; texts are left alone.
 # Auth is keyless (Workload Identity Federation) – no service account JSON.
 
 on:
@@ -20,6 +23,10 @@ on:
         type: choice
         default: production
         options: [production, beta, alpha, internal]
+      graphics:
+        description: 'Upload the listing graphics instead of a release'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -36,7 +43,11 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
+      - uses: actions/checkout@v4
+        if: github.event.inputs.graphics == 'true'
+
       - name: Download AAB and notes from the release
+        if: github.event.inputs.graphics != 'true'
         id: rel
         run: |
           TAG="${{ github.event.inputs.tag }}"
@@ -57,6 +68,7 @@ jobs:
           create_credentials_file: false
 
       - name: Upload to Google Play
+        if: github.event.inputs.graphics != 'true'
         env:
           TOKEN: ${{ steps.auth.outputs.access_token }}
           PKG: app.errand
@@ -127,5 +139,49 @@ jobs:
                   release["releaseNotes"] = notes
               releases = [release]
           call("PUT", f"{API}/edits/{edit}/tracks/{TRACK}", {"track": TRACK, "releases": releases})
+          call("POST", f"{API}/edits/{edit}:commit")
+          print("Committed edit", edit)
+
+      - name: Upload listing graphics
+        if: github.event.inputs.graphics == 'true'
+        env:
+          TOKEN: ${{ steps.auth.outputs.access_token }}
+          PKG: app.errand
+        shell: python3 {0}
+        run: |
+          import json, os, sys, urllib.request, urllib.error
+          from pathlib import Path
+
+          TOKEN, PKG = os.environ["TOKEN"], os.environ["PKG"]
+          API = "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/" + PKG
+          UPLOAD = "https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications/" + PKG
+          G = Path("docs/google-play/graphics")
+
+          def call(method, url, body=None, data=None, ctype="application/json"):
+              if body is not None:
+                  data = json.dumps(body).encode()
+              req = urllib.request.Request(url, data=data, method=method,
+                                           headers={"Authorization": "Bearer " + TOKEN, "Content-Type": ctype})
+              try:
+                  with urllib.request.urlopen(req, timeout=300) as r:
+                      text = r.read()
+                      return json.loads(text) if text else {}
+              except urllib.error.HTTPError as e:
+                  sys.exit(f"{method} {url.split('?')[0]} -> {e.code}: {e.read().decode()}")
+
+          edit = call("POST", API + "/edits", {})["id"]
+          for lang, short in (("en-US", "en"), ("ru-RU", "ru")):
+              sets = {
+                  "icon": [G / "icon-512.png"],
+                  "featureGraphic": [G / f"feature-graphic-{short}.png"],
+                  "phoneScreenshots": sorted((G / f"screenshots-{short}").glob("*.png"), key=lambda p: int(p.stem)),
+              }
+              for kind, files in sets.items():
+                  base = f"{API}/edits/{edit}/listings/{lang}/{kind}"
+                  call("DELETE", base)
+                  for f in files:
+                      call("POST", f"{UPLOAD}/edits/{edit}/listings/{lang}/{kind}?uploadType=media",
+                           data=f.read_bytes(), ctype="image/png")
+                  print(f"{lang} {kind}: {len(files)} uploaded")
           call("POST", f"{API}/edits/{edit}:commit")
           print("Committed edit", edit)
