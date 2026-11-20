@@ -344,4 +344,8 @@
     <string name="run_add_line">Забыли вписать? «сыр 200 г»</string>
     <string name="run_edit_hint">Долгое нажатие на строку – исправить или удалить.</string>
     <string name="dur_h">%d ч</string>
+    <string name="handed_when">Когда сдана</string>
+    <string name="handed_now">Сейчас</string>
+    <string name="handed_start_day">В день выхода, %1$s</string>
+    <string name="handed_other">Другой день…</string>
 </resources>

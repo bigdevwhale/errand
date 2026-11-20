@@ -338,4 +338,8 @@
     <string name="run_add_line">Forgot something? “cheese 200 g”</string>
     <string name="run_edit_hint">Press and hold a line to fix it or delete it.</string>
     <string name="dur_h">%d h</string>
+    <string name="handed_when">Handed in</string>
+    <string name="handed_now">Now</string>
+    <string name="handed_start_day">On the day out, %1$s</string>
+    <string name="handed_other">Another day…</string>
 </resources>

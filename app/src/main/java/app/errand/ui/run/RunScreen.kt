@@ -99,7 +99,7 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun RunScreen(home: Home, go: Go, startShop: Long? = null) {
+fun RunScreen(home: Home, go: Go, startShop: Long? = null, startDeliver: Boolean = false) {
     val run = home.open
     if (run == null) {
         // Delivered or called off elsewhere.
@@ -112,7 +112,7 @@ fun RunScreen(home: Home, go: Go, startShop: Long? = null) {
     var shop by rememberSaveable { mutableLongStateOf(startShop ?: shops.firstOrNull()?.id ?: 0L) }
     var pricing by rememberSaveable { mutableLongStateOf(0L) }
     var unordered by rememberSaveable { mutableStateOf(false) }
-    var deliver by rememberSaveable { mutableStateOf(false) }
+    var deliver by rememberSaveable { mutableStateOf(startDeliver) }
     var cancel by rememberSaveable { mutableStateOf(false) }
     var lastTaken by rememberSaveable { mutableLongStateOf(0L) }
     // Editing a line mid-run (long press) and a line forgotten at home (#2, #3).
@@ -339,6 +339,19 @@ private fun DeliverSheet(home: Home, run: Run, go: Go, onClose: () -> Unit) {
     val scope = rememberCoroutineScope()
     val forgotten = home.due.count { it.outOn != run.id }
     val out = home.due.size - forgotten
+    // Handed in later than the run (forgotten for a day or two): the day can be chosen (#6).
+    val zone = java.time.ZoneId.systemDefault()
+    val startDay = java.time.Instant.ofEpochMilli(run.startedAt).atZone(zone).toLocalDate()
+    val today = java.time.LocalDate.now(zone)
+    var handDay by rememberSaveable { mutableLongStateOf(today.toEpochDay()) }
+    var picking by rememberSaveable { mutableStateOf(false) }
+    /** The moment it is handed in: the chosen day at the present hour, never before the run set out nor after now. */
+    fun handedAt(): Long {
+        val now = System.currentTimeMillis()
+        if (handDay == today.toEpochDay()) return now
+        val t = java.time.LocalDate.ofEpochDay(handDay).atTime(java.time.LocalTime.now(zone)).atZone(zone).toInstant().toEpochMilli()
+        return t.coerceIn(run.startedAt, now)
+    }
 
     Text(stringResource(R.string.deliver_title, run.number), style = SType.Title)
     Spacer(Modifier.height(10.dp))
@@ -357,13 +370,50 @@ private fun DeliverSheet(home: Home, run: Run, go: Go, onClose: () -> Unit) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Weather.entries.forEach { w -> Chip(T.weather(c, w) + if (w.bonus > 0) " +${w.bonus}%" else "", weather == w) { weather = w } }
     }
+    if (startDay.isBefore(today)) {
+        val loc = java.util.Locale.getDefault()
+        val fmt = java.time.format.DateTimeFormatter.ofPattern("d MMM", loc)
+        SectionTitle(stringResource(R.string.handed_when))
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Chip(stringResource(R.string.handed_now), handDay == today.toEpochDay()) { handDay = today.toEpochDay() }
+            Chip(stringResource(R.string.handed_start_day, startDay.format(fmt)), handDay == startDay.toEpochDay()) { handDay = startDay.toEpochDay() }
+            val other = handDay != today.toEpochDay() && handDay != startDay.toEpochDay()
+            Chip(if (other) java.time.LocalDate.ofEpochDay(handDay).format(fmt) else stringResource(R.string.handed_other), other) { picking = true }
+        }
+    }
+    if (picking) HandDayDialog(startDay, today, handDay, { picking = false }) { handDay = it; picking = false }
     Spacer(Modifier.height(20.dp))
     PrimaryButton(stringResource(R.string.hand_in), {
         val sum = Currency.parse(spent) ?: 0
         scope.launch {
-            container.office.deliver(run.id, weather, sum)
+            container.office.deliver(run.id, weather, sum, handedAt())
             onClose()
             go.slip(run.id, fresh = true)
         }
     }, Modifier.fillMaxWidth())
+}
+
+/** A calendar from the day the run set out to today, for a waybill handed in late (#6). */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun HandDayDialog(from: java.time.LocalDate, to: java.time.LocalDate, day: Long, onDismiss: () -> Unit, onPick: (Long) -> Unit) {
+    val utc = java.time.ZoneOffset.UTC
+    val lo = from.atStartOfDay(utc).toInstant().toEpochMilli()
+    val hi = to.atStartOfDay(utc).toInstant().toEpochMilli()
+    val state = androidx.compose.material3.rememberDatePickerState(
+        initialSelectedDateMillis = java.time.LocalDate.ofEpochDay(day).atStartOfDay(utc).toInstant().toEpochMilli(),
+        selectableDates = object : androidx.compose.material3.SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long) = utcTimeMillis in lo..hi
+            override fun isSelectableYear(year: Int) = year in from.year..to.year
+        },
+    )
+    androidx.compose.material3.DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            androidx.compose.material3.TextButton(onClick = {
+                state.selectedDateMillis?.let { onPick(java.time.Instant.ofEpochMilli(it).atZone(utc).toLocalDate().toEpochDay()) } ?: onDismiss()
+            }) { Text(stringResource(android.R.string.ok)) }
+        },
+        dismissButton = { androidx.compose.material3.TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } },
+    ) { androidx.compose.material3.DatePicker(state) }
 }

@@ -52,14 +52,14 @@ abstract class ScreensBase {
 
     private val app get() = ApplicationProvider.getApplicationContext<ErrandApp>()
 
-    private fun home(onRun: Boolean = false, hour: Int? = null): Home = runBlocking {
+    private fun home(onRun: Boolean = false, hour: Int? = null, startedHoursAgo: Long = 0): Home = runBlocking {
         val c = app.container
         DemoSeed.seedIfEmpty(app, c)
         val dao = c.db.dao()
         if (onRun && dao.runs().none { it.leg == "OUT" }) {
             // Halfway round the corner shop: four things in the bag, one shelf empty.
             val shop = dao.shops().first().id
-            val runId = c.office.start(if (app.ru) 250_000 else 6_000, listOf(shop), System.currentTimeMillis() - 14 * Rules.MINUTE)
+            val runId = c.office.start(if (app.ru) 250_000 else 6_000, listOf(shop), System.currentTimeMillis() - 14 * Rules.MINUTE - startedHoursAgo * 60 * Rules.MINUTE)
             val run = dao.run(runId)!!
             val h = Home(dao.items(), dao.runs(), dao.clients(), dao.shops(), emptyList(), dao.prices(), c.settings.now(), System.currentTimeMillis(), app.ru)
             val walk = h.walk(shop)
@@ -98,6 +98,8 @@ abstract class ScreensBase {
     @Test fun waybill() = home().let { shot("2-waybill", it) { h, go -> WaybillScreen(h, go) } }
     @Test fun accept() = home().let { shot("2-accept", it) { h, go -> WaybillScreen(h, go, startAccept = true) } }
     @Test fun run() = home(onRun = true).let { h -> shot("3-run", h) { hh, go -> RunScreen(hh, go, startShop = hh.shops.first().id) } }
+    /** A waybill forgotten since yesterday: the day it is handed in can be chosen (#6). */
+    @Test fun deliverLate() = home(onRun = true, startedHoursAgo = 26).let { h -> shot("3-deliver-late", h) { hh, go -> RunScreen(hh, go, startShop = hh.shops.first().id, startDeliver = true) } }
     @Test fun slip() = home().let { h -> shot("4-slip", h) { hh, go -> SlipScreen(hh.done.first().id, false, hh, go) } }
     @Test fun archive() = home().let { shot("5-archive", it) { h, go -> ArchiveScreen(h, go) } }
     @Test fun notebook() = home().let { shot("6-notebook", it) { h, go -> NotebookScreen(h, go) } }
