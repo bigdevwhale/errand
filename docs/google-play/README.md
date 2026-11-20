@@ -65,6 +65,9 @@ Play не берёт картинки длиннее двух ширин, а р�
 python tools/play.py   # office, waybill, run, payslip, depot, file, notebook, archive
 ```
 
+Загрузить иконку, баннеры и скриншоты в Play: Actions → **Google Play listing graphics** → Run workflow
+(ждёт одобрения в окружении `google-play`, тексты листинга не трогает).
+
 ## 3. Store settings
 
 | Поле | Значение |

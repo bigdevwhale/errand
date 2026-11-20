@@ -247,7 +247,7 @@
     <string name="u_clock">A clock over the door</string>
     <string name="u_clock_sub">Real time, for rush orders.</string>
     <string name="u_bicycle">A bicycle</string>
-    <string name="u_bicycle_sub">A black roadster with a wicker basket.</string>
+    <string name="u_bicycle_sub">A green city bike with a wicker basket.</string>
     <string name="u_paint">Fresh paint</string>
     <string name="u_paint_sub">Sage walls and a green door.</string>
     <string name="u_phone">A telephone</string>
@@ -261,7 +261,7 @@
     <string name="u_floor">A second floor</string>
     <string name="u_floor_sub">Three windows over the office.</string>
     <string name="u_van">A van</string>
-    <string name="u_van_sub">Rounded, green, with a red stripe.</string>
+    <string name="u_van_sub">Rounded, green, with parcels on the roof.</string>
     <string name="b_first">First run</string>
     <string name="b_first_sub">The waybill went out and came back.</string>
     <string name="b_ten">Ten runs</string>

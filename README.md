@@ -51,7 +51,7 @@ python tools/icon.py                                   # the logo
 python tools/res.py                                    # theme and the launcher icon
 ```
 
-Kotlin, Jetpack Compose, Room, DataStore. Everything is drawn in code: the office in its street with the sky by the hour, every upgrade and vehicle, the rubber stamps with their worn ink, the string bag, the rank badges.
+Kotlin, Jetpack Compose, Room, DataStore. The office is hand-painted in a nostalgic anime style: four stages as it grows, each by day, evening and night, with the vehicle at the door, the name on the sign and the clock's real hands laid over by code. The rest is drawn in code: the rubber stamps with their worn ink, the string bag, the rank badges.
 
 ## License
 

@@ -245,7 +245,7 @@
     <string name="u_clock">Часы над входом</string>
     <string name="u_clock_sub">Показывают настоящее время, для молний.</string>
     <string name="u_bicycle">Велосипед</string>
-    <string name="u_bicycle_sub">Чёрный дорожный, с плетёной корзиной.</string>
+    <string name="u_bicycle_sub">Зелёный городской, с плетёной корзиной.</string>
     <string name="u_paint">Свежая краска</string>
     <string name="u_paint_sub">Шалфейные стены и зелёная дверь.</string>
     <string name="u_phone">Телефонный аппарат</string>
@@ -259,7 +259,7 @@
     <string name="u_floor">Второй этаж</string>
     <string name="u_floor_sub">Три окна над конторой.</string>
     <string name="u_van">Фургон</string>
-    <string name="u_van_sub">Округлый, зелёный, с красной полосой.</string>
+    <string name="u_van_sub">Округлый, зелёный, с посылками на крыше.</string>
     <string name="b_first">Первый рейс</string>
     <string name="b_first_sub">Накладная ушла и вернулась.</string>
     <string name="b_ten">Десять рейсов</string>
