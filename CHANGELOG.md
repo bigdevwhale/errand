@@ -6,6 +6,18 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.3.0] - 2026-11-20
+
+### Changed
+- The office is painted by hand in a nostalgic anime style: four stages as it grows (a shabby plank sign, the enamel sign with flowers, flag, lamp and clock, fresh sage paint with a dovecote, a second floor), each by day, evening and night. The vehicle at the door, the name on the sign and the clock's real hands are laid over it, and a previewed purchase shows faintly as before.
+- A new painted app icon: the parcel with its red stamp.
+- The bicycle and the van are described as they now look.
+
+<!-- tg
+Контора теперь нарисована от руки в ностальгическом аниме-стиле: четыре стадии по мере роста, днём, вечером и ночью.
+Новая иконка приложения.
+-->
+
 ## [1.2.0] - 2026-11-20
 
 ### Added
