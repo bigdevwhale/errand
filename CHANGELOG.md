@@ -6,6 +6,15 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.2.0] - 2026-11-20
+
+### Added
+- A waybill forgotten for a day or more can be handed in on the day it really was: «Now», «On the day out» or any day in between (#6).
+
+<!-- tg
+Если забыл сдать накладную вовремя, при сдаче теперь можно выбрать день: сегодня, день выхода или любой другой.
+-->
+
 ## [1.1.1] - 2026-11-16
 
 ### Fixed
